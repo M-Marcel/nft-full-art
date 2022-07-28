@@ -13,21 +13,23 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
     // Dynamic SVG  NFT
     // const lowValue = ethers.utils.parseEther("1")
-    const highValue = ethers.utils.parseEther("1")
+    const highValue = ethers.utils.parseEther("4000")
     const dynamicSvgNft = await ethers.getContract("DynamicSvgNft", deployer)
     const dynamicSvgNftMintTx = await dynamicSvgNft.mintNft(highValue)
     await dynamicSvgNftMintTx.wait(1)
-    console.log(`Dynamic SVG NFT index 0 tokenURI: ${await dynamicSvgNft.tokenURI(0)}`)
+    /* console.log(`Dynamic SVG NFT index 0 tokenURI: ${await dynamicSvgNft.tokenURI(0)}`)
     console.log(`Dynamic SVG NFT lowImageURI: ${await dynamicSvgNft.getLowSVG()}`)
-    console.log(`Dynamic SVG NFT highImageURI: ${await dynamicSvgNft.getHighSVG()}`)
+    console.log(`Dynamic SVG NFT highImageURI: ${await dynamicSvgNft.getHighSVG()}`) */
 
     // Random IPFS NFT
     const randomIpfsNft = await ethers.getContract("RandomIpfsNft", deployer)
     const mintFee = await randomIpfsNft.getMintFee()
+    const randomIpfsNftMintTx = await randomIpfsNft.requestNft({ value: mintFee.toString() })
+    const randomIpfsNftMintTxReceipt = await randomIpfsNftMintTx.wait(1)
 
     // Need to listen for response
     await new Promise(async (resolve) => {
-        setTimeout(resolve, 500000) // 5 minute timeout time
+        setTimeout(resolve, 300000) // 5 minute timeout time
         // setup listener for our event
         randomIpfsNft.once("NftMinted", async () => {
             resolve()
